@@ -15,7 +15,7 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
   public Scalar lower = new Scalar(0, 0, 0);
   public Scalar upper = new Scalar(255, 255, 255);
 
-  private boolean saveImg=false;
+  private boolean saveImg = false;
   private Mat hsvMat = new Mat();
   private Mat binaryMat = new Mat();
   private Mat maskedInputMat = new Mat();
@@ -23,11 +23,17 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
   private Point topLeft1 = new Point(10, 0), bottomRight1 = new Point(40, 20);
 
   public rectangle_thresholder_pipeline(Telemetry telemetry) {
-    this.telemetry = telemetry; saveImg=false;
+    this.telemetry = telemetry;
+    saveImg = false;
   }
 
-  public rectangle_thresholder_pipeline() {saveImg=false;}
-  public rectangle_thresholder_pipeline(boolean s) {saveImg=s;}
+  public rectangle_thresholder_pipeline() {
+    saveImg = false;
+  }
+
+  public rectangle_thresholder_pipeline(boolean s) {
+    saveImg = s;
+  }
 
   @Override
   public Mat processFrame(Mat input) {
@@ -47,21 +53,17 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
     }
 
     if (w1 > w2) {
-      telemetry.addLine("rect#1");
       out = "1";
     } else if (w1 < w2) {
-      telemetry.addLine("rect#2");
       out = "2";
     } else {
-      telemetry.addLine("BOTH");
       out = "3";
     }
 
-    telemetry.update();
-
-    if(saveImg) {
-      //saveMatToDisk(input, "rect_manual_img");
-      saveImg=false;
+    if (saveImg) {
+      // saveMatToDisk(input, "rect_manual_img");
+      saveImg = false;
+      saveMatToDisk(input, "rect_manual_img");
     }
 
     return binaryMat;

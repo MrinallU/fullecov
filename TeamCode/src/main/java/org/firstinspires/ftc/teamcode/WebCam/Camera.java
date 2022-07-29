@@ -31,13 +31,13 @@
  hardwareMap.appContext.getPackageName());
 
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class,
- "Webcam 1"), cameraMonitorViewId);
+ "camera"), cameraMonitorViewId);
         webcam.setPipeline(p1);
         webcam.setMillisecondsPermissionTimeout(2500);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()  {
             @Override
             public void onOpened() {
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -45,14 +45,17 @@
 
             }
         });
-    }
+  }
 
-    public void switchToFFPipleine(){
-        webcam.setPipeline(p2);
-    }
+  public void switchToFFPipleine() {
+    webcam.setPipeline(p2);
+  }
 
-    public ArrayList<VisionObject> getObjects(){ return p2.objs; }
-    public void stop(){
-        webcam.stopStreaming();
-    }
- }
+  public ArrayList<VisionObject> getObjects() {
+    return p2.objs;
+  }
+
+  public void stop() {
+    webcam.stopStreaming();
+  }
+}

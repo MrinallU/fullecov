@@ -13,7 +13,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.Stack;
 
-// todo Linear regression for distance based on cluster size + linear regression for angle
+// todo Linear regression for distance based on cluster size + linear regression for x and y
+// distance
 public class auto_floodfill_detection extends OpenCvPipeline {
   Telemetry telemetry;
   public Scalar lower = new Scalar(0, 109, 0);
@@ -39,8 +40,13 @@ public class auto_floodfill_detection extends OpenCvPipeline {
     saveImg = false;
   }
 
-  public auto_floodfill_detection() {saveImg=false;}
-  public auto_floodfill_detection(boolean save) {saveImg=save;}
+  public auto_floodfill_detection() {
+    saveImg = false;
+  }
+
+  public auto_floodfill_detection(boolean save) {
+    saveImg = save;
+  }
 
   @Override
   public Mat processFrame(Mat input) {
@@ -74,9 +80,9 @@ public class auto_floodfill_detection extends OpenCvPipeline {
       }
     }
 
-    if(saveImg){
+    if (saveImg) {
       saveImg = false;
-      //saveMatToDisk(input, "auto_rect_img");
+      // saveMatToDisk(input, "auto_rect_img");
     }
 
     telemetry.addLine(String.valueOf(objs.get(0).centerX));
@@ -116,4 +122,3 @@ public class auto_floodfill_detection extends OpenCvPipeline {
     }
   }
 }
-
