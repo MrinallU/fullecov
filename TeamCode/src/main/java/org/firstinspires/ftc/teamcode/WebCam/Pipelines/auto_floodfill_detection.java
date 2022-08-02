@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.WebCam.Pipelines;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.WebCam.Camera;
 import org.firstinspires.ftc.teamcode.WebCam.Pipelines.Helpers.Pos;
 import org.firstinspires.ftc.teamcode.WebCam.Pipelines.Helpers.VisionObject;
 import org.opencv.core.Core;
@@ -8,7 +9,9 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
+import org.openftc.easyopencv.PipelineRecordingParameters;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -17,15 +20,16 @@ import java.util.Stack;
 // distance
 public class auto_floodfill_detection extends OpenCvPipeline {
   Telemetry telemetry;
-  public Scalar lower = new Scalar(0, 109, 0);
+  public Scalar lower = new Scalar(0, 136, 85);
   public Scalar upper = new Scalar(255, 255, 255);
   public Mat img;
   private Mat hsvMat = new Mat();
   private Mat binaryMat = new Mat();
   private Mat maskedInputMat = new Mat();
   private boolean saveImg = false;
+  private OpenCvCamera camera;
 
-  public ArrayList<VisionObject> objs;
+  public ArrayList<VisionObject> objs = new ArrayList<>();
   private static Mat grid; // the grid itself
   private static int rowNum;
   private static int colNum; // grid dimensions, rows and columns
@@ -44,27 +48,28 @@ public class auto_floodfill_detection extends OpenCvPipeline {
     saveImg = false;
   }
 
-  public auto_floodfill_detection(boolean save) {
+  public auto_floodfill_detection(boolean save, OpenCvCamera camera) {
     saveImg = save;
+    this.camera = camera;
   }
 
   @Override
   public Mat processFrame(Mat input) {
-    objs.clear();
+    //objs = new ArrayList<>();
     Imgproc.cvtColor(input, hsvMat, Imgproc.COLOR_RGB2HSV);
     Core.inRange(hsvMat, lower, upper, binaryMat);
     maskedInputMat.release();
     Core.bitwise_and(input, input, maskedInputMat, binaryMat);
     grid = binaryMat;
 
-    objs = new ArrayList<>();
+    //objs = new ArrayList<>();
     rowNum = (int) input.size().height;
     colNum = (int) input.size().width;
     visited = new boolean[rowNum][colNum];
     double w1 = 0, w2 = 0;
     boolean f = false;
     // process the pixel value for each rectangle  (255 = W, 0 = B)
-    for (int i = 10; i < input.size().height; i++) {
+    for (int i = 133; i < input.size().height; i++) {
       for (int j = 0; j < input.size().width; j++) {
         if (!visited[i][j] && binaryMat.get(i, j)[0] == 255) {
           l = Integer.MAX_VALUE;
@@ -82,11 +87,10 @@ public class auto_floodfill_detection extends OpenCvPipeline {
 
     if (saveImg) {
       saveImg = false;
-      // saveMatToDisk(input, "auto_rect_img");
+      //saveMatToDisk(input, "auto_rect_img");
     }
 
-    telemetry.addLine(String.valueOf(objs.get(0).centerX));
-    telemetry.update();
+
     return input;
   }
 
@@ -121,4 +125,37 @@ public class auto_floodfill_detection extends OpenCvPipeline {
       }
     }
   }
-}
+
+  @Override
+  public void onViewportTapped()
+  {
+    boolean toggleRecording = false;
+    toggleRecording = !toggleRecording;
+
+    if(toggleRecording)
+    {
+      /*
+       * This is all you need to do to start recording.
+       */
+      camera.startRecordingPipeline(
+              new PipelineRecordingParameters.Builder()
+                      .setBitrate(4, PipelineRecordingParameters.BitrateUnits.Mbps)
+                      .setEncoder(PipelineRecordingParameters.Encoder.H264)
+                      .setOutputFormat(PipelineRecordingParameters.OutputFormat.MPEG_4)
+                      .setFrameRate(30)
+                      .setPath("/sdcard/EasyOpenCV/pipeline_rec.mp4")
+                      .build());
+    }
+    else{
+
+    }
+
+      /*
+       * Note: if you don't stop recording by yourself, it will be automatically
+       * stopped for you at the end of your OpMode
+       *.stopRecordingPipeline(); */
+    }
+  }
+
+
+
