@@ -1,4 +1,4 @@
- package org.firstinspires.ftc.teamcode.WebCam;
+package org.firstinspires.ftc.teamcode.WebCam;
 
  import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -14,17 +14,17 @@
 
  import java.util.ArrayList;
 
- @TeleOp
+
  public class Camera {
     private OpenCvWebcam webcam;
-    private HardwareMap hardwareMap;
+    public HardwareMap hardwareMap;
     private rectangle_thresholder_pipeline p1;
     private auto_floodfill_detection p2;
 
     public Camera(HardwareMap hw){
-        p1 = new rectangle_thresholder_pipeline();
-        p2 = new auto_floodfill_detection();
 
+
+        p1 = new rectangle_thresholder_pipeline();
         this.hardwareMap=hw;
         int cameraMonitorViewId =
  hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id",
@@ -34,18 +34,23 @@
  "camera"), cameraMonitorViewId);
         webcam.setPipeline(p1);
         webcam.setMillisecondsPermissionTimeout(2500);
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()  {
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
             @Override
             public void onOpened() {
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPSIDE_DOWN);
             }
 
             @Override
             public void onError(int errorCode) {
 
             }
+
         });
+
+        p2 = new auto_floodfill_detection(true, webcam);
   }
+
 
   public void switchToFFPipleine() {
     webcam.setPipeline(p2);
