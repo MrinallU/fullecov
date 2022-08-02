@@ -10,7 +10,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class rectangle_thresholder_pipeline extends OpenCvPipeline {
-  Telemetry telemetry;
+
   private String out;
   public Scalar lower = new Scalar(0, 0, 0);
   public Scalar upper = new Scalar(255, 255, 255);
@@ -22,10 +22,10 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
 
   private Point topLeft1 = new Point(10, 0), bottomRight1 = new Point(40, 20);
 
-  public rectangle_thresholder_pipeline(Telemetry telemetry) {
+  /*public rectangle_thresholder_pipeline(Telemetry telemetry) {
     this.telemetry = telemetry;
     saveImg = false;
-  }
+  }*/
 
   public rectangle_thresholder_pipeline() {
     saveImg = false;
@@ -63,7 +63,7 @@ public class rectangle_thresholder_pipeline extends OpenCvPipeline {
     if (saveImg) {
       // saveMatToDisk(input, "rect_manual_img");
       saveImg = false;
-      saveMatToDisk(input, "rect_manual_img");
+      //saveMatToDisk(input, "rect_manual_img");
     }
 
     return binaryMat;
